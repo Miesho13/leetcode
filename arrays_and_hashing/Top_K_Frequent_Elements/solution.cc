@@ -12,42 +12,42 @@ class Solution {
 
 public:
     std::vector<int> topKFrequent(std::vector<int>& nums, int k) { 
-        std::unordered_set<int> hashmap;
-        std::vector<std::vector> vec(k);
-        for (auto n : nums) {
-            if (hashmap.find(n) == hashmap.end()) {
-                hashmap.insert(n);
-                
-            }
+        std::unordered_map<int, int> counter;
+        for (auto num : nums) {
+            counter[num]++;
         }
-    
+
+        std::vector<std::pair<int, int>> sorted(counter.begin(), counter.end());
+        sort(
+            sorted.begin(), 
+            sorted.end(), 
+            [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+                return a.second > b.second;
+            }
+        );
 
 
-        
-    
-        
-         
+        std::vector<int> result;
+        for (int i = 0; i < k && i < sorted.size(); ++i) {
+            result.push_back(sorted[i].first);
+        }
+
+        return result; 
 
     }
 };
 
-void print_group(std::vector<std::vector<std::string>> set) {
-    std::cout << "["; 
-    for (auto subset : set) {
-        std::cout << "[";
-        for (auto str : subset) {
-            std::cout << str << " ";
-        }
-        std::cout << "]," ;
-    }
-    std::cout << '\n';
-}
 
 int main() {
     Solution solution;
 
     std::vector<int> test_input_1 = {1,1,1,2,2,3};
-    solution.topKFrequent(test_input_1, 2);
-
+    auto ret = solution.topKFrequent(test_input_1, 2);
+    
+    for (auto num : ret) {
+        std::cout << num << " ";
+    }
+    
+    std::cout << '\n';
     return 0;
 }

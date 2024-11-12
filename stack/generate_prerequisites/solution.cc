@@ -8,32 +8,42 @@
 #include <map>
 #include <stack>
 #include <cstdint>
-
-
+// ()
+// (())
+// 0 0 2
+// 1 0 2
+// 2 0 2
+// 2 1 2
+// 2 2 2
+// 2 1 2
+// 2 0 2
+// 1 1 2
 class Solution {
 public:
-    bool valid(std::string &s) {
-        int open = 0;         
-        for (char c : s) {
-            open += (c == '(') ? 1 : -1;
-            if (open < 0) { return false; }
-        }
-        return open == 0;
-    }
-
-    void gen_par(std::string s, std::vector<std::string>& ret, uint32_t n) {
-        if (s.length() == n * 2) {
-            if (valid(s)) { ret.push_back(s); }
+    void backtrack(int openN, int closedN, int n, std::vector<std::string>& res, std::string& stack) {
+        if (openN == closedN && openN == n) {
+            res.push_back(stack);
             return;
         }
 
-        gen_par(s + '(', ret, n);
-        gen_par(s + ')', ret, n);
-    } 
+        if (openN < n) {
+            stack += '(';
+            backtrack(openN + 1, closedN, n, res, stack);
+            stack.pop_back();
+        }
+
+        if (closedN < openN) {
+            stack += ')';
+            backtrack(openN, closedN + 1, n, res, stack);
+            stack.pop_back();
+        }
+    }
 
     std::vector<std::string> generateParenthesis(int n) {
         std::vector<std::string> ret;
-        gen_par("", ret, n);
+        std::string stack;
+
+        backtrack(0, 0, n, ret, stack);
         return ret;
     }
 };
@@ -49,7 +59,7 @@ void print_vector(std::vector<T> &v) {
 
 int main() {
     Solution solution;
-    auto test = solution.generateParenthesis(1);
+    auto test = solution.generateParenthesis(2);
     print_vector<std::string>(test);
 
     return 0;

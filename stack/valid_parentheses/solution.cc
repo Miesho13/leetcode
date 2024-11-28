@@ -11,55 +11,29 @@
 class Solution {
 public:
     bool isValid(std::string s) {
-        std::stack<char> stack_bracket;
-
-        if (s.size() % 2 == true) {
-            return false;
-        }
+        std::stack<char> stack;
+        std::unordered_map<char, char> close_to_open = {
+            {')', '('},
+            {']', '['},
+            {'}', '{'} };
+        
 
         for (auto c : s) {
-            switch (c) {
-                case '(':
-                case '[':
-                case '{':
-                    stack_bracket.push(c);
-                    break;
+            if (close_to_open.count(c)) {
+                if (stack.top() == close_to_open[c]) {
+                    stack.pop();
+                }
+                else {
+                    return false;
+                }
 
-                case '}':
-                    if (stack_bracket.empty() == true) {
-                        return false;
-                    }
-                    else if (stack_bracket.top() == '{') {
-                        stack_bracket.pop();
-                    } else {
-                        return false;
-                    }
-                    break;
-                case ')':
-                    if (stack_bracket.empty() == true) {
-                        return false;
-                    }
-                    else if (stack_bracket.top() == '(') {
-                        stack_bracket.pop();
-                    } else {
-                        return false;
-                    }
-                    break;
-
-                case ']':
-                    if (stack_bracket.empty() == true) {
-                        return false;
-                    }
-                    else if (stack_bracket.top() == '[') {
-                        stack_bracket.pop();
-                    } else {
-                        return false;
-                    }
-                    break;
+            }
+            else { 
+                stack.push(c);
             }
         }
 
-        return stack_bracket.empty();
+        return stack.empty();
     }
 };
 
@@ -72,6 +46,10 @@ int main() {
     std::cout << (bool)output << '\n';
 
     patern = "{([})}";
+    output = solution.isValid(patern);
+    std::cout << (bool)output << '\n';
+
+    patern = "{({})}";
     output = solution.isValid(patern);
     std::cout << (bool)output << '\n';
     return 0;
